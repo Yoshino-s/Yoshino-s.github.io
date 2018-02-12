@@ -1,0 +1,60 @@
+<error>
+	<template>
+		<mu-card>
+			<mu-card-title title="Oops,there's no page here." sub-title="404 NOT FOUND">
+			</mu-card-title>
+			<mu-card-text>
+				Maybe you can do something else.
+				<br/>
+				Like search for your want.
+			</mu-card-text>
+			<mu-card-actions>
+				<mu-text-field hint-text="Search something" type="text" icon="search">
+				</mu-text-field>
+			</mu-card-actions>
+		</mu-card>
+	</template>
+	<script>
+		
+	</script>
+	<style>
+	</style>
+</error>
+
+<header-drawer>
+	<template>
+		<mu-appbar :title="$route.params.id">
+			<mu-icon-button icon="menu" slot="left" @click="toggle()">
+			</mu-icon-button>
+			<mu-icon-button icon="expand_more" slot="right">
+			</mu-icon-button>
+		</mu-appbar>
+		<mu-drawer :open="open" :docked="false" @close="toggle()">
+			<mu-list class="drawer-list" @item-click="toggle()">
+				<mu-list-item title="Home Page" to="/home">
+					<mu-icon slot="left" value="home"/>
+					</mu-icon>
+				</mu-list-item>
+				
+				<mu-list-item title="My" to="/user/56">
+					<mu-icon slot="left" value="person">
+					</mu-icon>
+				</mu-list-item>
+			</mu-list>
+		</mu-drawer>
+	</template>
+	<script>
+		{
+			data() {
+				return {
+					open: false
+				}
+			},
+			methods: {
+				toggle() {
+					this.open = !this.open;
+				}
+			}
+		}
+	</script>
+</header-drawer>

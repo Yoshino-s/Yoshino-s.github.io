@@ -4,7 +4,8 @@ requirejs.config({
 		vue: "https://vuejs.org/js/vue",
 		'vue-router': "https://unpkg.com/vue-router/dist/vue-router",
 		vconsole: "https://unpkg.com/vconsole/dist/vconsole.min",
-		muse: "https://unpkg.com/muse-ui/dist/muse-ui"
+		muse: "https://unpkg.com/muse-ui/dist/muse-ui",
+		axios: "https://unpkg.com/axios/dist/axios.min"
 	}
 });
 requirejs(["polyfill", "vue", "vue-router", "vconsole", "muse", "component"], function(pf, Vue, Router, VConsole, Muse, cp) {
@@ -12,8 +13,9 @@ requirejs(["polyfill", "vue", "vue-router", "vconsole", "muse", "component"], fu
 	Vue.use(Router);
 	Vue.use(Muse);
 	
-	const Foo = { template: '<div>foo: {{ $route.params.id }}</div>' }
+	const Foo = { template: '<error></error>' }
 	const Bar = { template: '<div>bar</div>' }
+	
 	
 	cp.loadComponent("/js/component.html", (c)=>{
 		console.log(c);
@@ -21,6 +23,9 @@ requirejs(["polyfill", "vue", "vue-router", "vconsole", "muse", "component"], fu
 		
 		const routes = [
 			{
+				path: '/settings',
+				component: {template: "<settings></settings>"}
+			}, {
 				path: '/user/:id',
 				component: Foo
 			}, {
@@ -38,12 +43,16 @@ requirejs(["polyfill", "vue", "vue-router", "vconsole", "muse", "component"], fu
 		},e => {
 			console.log(e);
 		}) ;
+		
+		for (let com in c) {
+			let comp = c[com];
+			Vue.component(comp.name, comp);
+		}
 	
 		const app = new Vue({
-			router,
-			components: c,
+			router
 		}).$mount('#app');
-	});
+	},e=>console.log(e.message));
 	
 	window.pss = n => {
 		let t = [];

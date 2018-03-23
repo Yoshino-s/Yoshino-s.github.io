@@ -9,36 +9,30 @@
 				Like search for your want.
 			</mu-card-text>
 			<mu-card-actions>
-				<mu-text-field hint-text="Search something" type="text" icon="search">
-				</mu-text-field>
+				<mu-text-field hint-text="Search something" type="text" icon="search"/>
 			</mu-card-actions>
 		</mu-card>
 	</template>
-	<script>
-		
-	</script>
-	<style>
-	</style>
 </error>
 
 <header-drawer>
 	<template>
 		<mu-appbar :title="$route.params.id">
-			<mu-icon-button icon="menu" slot="left" @click="toggle()">
-			</mu-icon-button>
-			<mu-icon-button icon="expand_more" slot="right">
-			</mu-icon-button>
+			<mu-icon-button icon="menu" slot="left" @click="toggle()"/>
+			<mu-icon-button icon="expand_more" slot="right"/>
 		</mu-appbar>
 		<mu-drawer :open="open" :docked="false" @close="toggle()">
 			<mu-list class="drawer-list" @item-click="toggle()">
-				<mu-list-item title="Home Page" to="/home">
+				<mu-list-item title="Main Page" to="/home">
 					<mu-icon slot="left" value="home"/>
-					</mu-icon>
 				</mu-list-item>
 				
-				<mu-list-item title="My" to="/user/56">
-					<mu-icon slot="left" value="person">
-					</mu-icon>
+				<mu-list-item title="My Home" to="/user/56">
+					<mu-icon slot="left" value="person"/>
+				</mu-list-item>
+				
+				<mu-list-item title="Settings" to="/settings">
+					<mu-icon slot="left" value="settings"/>
 				</mu-list-item>
 			</mu-list>
 		</mu-drawer>
@@ -57,4 +51,63 @@
 			}
 		}
 	</script>
+	<style>
+		.drawer-list .router-link-active {
+			font-weight: 500;
+		}
+	</style>
 </header-drawer>
+
+<settings>
+	<template>
+		<mu-list>
+			<mu-list-item disabled title="通知与信息设置" describe-text="总是中断"/>
+		</mu-list>
+		<mu-divider />
+		<mu-list>
+			<mu-sub-header>声音开启设置</mu-sub-header>
+			<mu-list-item disableRipple @click="handleToggle('events')" title="事件和提醒">
+				<mu-switch v-model="events"  slot="right"/>
+			</mu-list-item>
+			<mu-list-item disableRipple @click="handleToggle('calls')" title="电话">
+				<mu-switch v-model="calls" slot="right"/>
+			</mu-list-item>
+			<mu-list-item disableRipple @click="handleToggle('messages')" title="信息">
+				<mu-switch v-model="messages" slot="right"/>
+			</mu-list-item>
+		</mu-list>
+		<mu-list>
+			<mu-sub-header>通知设置</mu-sub-header>
+			<mu-list-item disableRipple @click="handleToggle('notifications')"  title="通知">
+				<mu-checkbox v-model="notifications" slot="left"/>
+			</mu-list-item>
+			<mu-list-item disableRipple @click="handleToggle('sounds')"  title="声音">
+				<mu-checkbox v-model="sounds" slot="left"/>
+			</mu-list-item>
+			<mu-list-item disableRipple @click="handleToggle('videoSounds')" title="视频的声音">
+				<mu-checkbox v-model="videoSounds" slot="left"/>
+			</mu-list-item>
+		</mu-list>
+	</template>
+	<script>
+		{
+			data () {
+				return {
+					events: false,
+					calls: false,
+					messages: false,
+					notifications: false,
+					sounds: false,
+					videoSounds: false
+				}
+			},
+			methods: {
+				handleToggle (key) {
+					this[key] = !this[key]
+				}
+			}
+		}
+	</script>
+	<style>
+	</style>
+</settings>

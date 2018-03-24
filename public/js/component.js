@@ -48,6 +48,7 @@ define(["vue", "utils", "axios"], function(Vue, utils, axios) {
 			}
 			callback(components)
 		}).catch(e => {
+			console.log(e.message);
 			onError(e);
 		})
 	}

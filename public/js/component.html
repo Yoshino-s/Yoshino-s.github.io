@@ -61,53 +61,105 @@
 <settings>
 	<template>
 		<mu-list>
-			<mu-list-item disabled title="通知与信息设置" describe-text="总是中断"/>
+			<mu-sub-header>Control</mu-sub-header>
+			
+			<mu-list-item title="Restart" @click="toggleRestartDialog()">
+				<mu-icon slot="left" value="refreshing"/>
+			</mu-list-item>
+			
+			<mu-list-item title="Reset" title-class="warning-text" @click="toggleResetDialog()">
+				<mu-icon slot="left" value="warning" class="warning-text"/>
+			</mu-list-item>
+			
+			<mu-divider />
+			<mu-sub-header>SSID & Password</mu-sub-header>
+			
+			<mu-list-item disable-ripple>
+				<mu-text-field hint-text="SSID" type="text" label="SSID"/>
+				<mu-text-field hint-text="Password" type="password" label="Password"/>
+			</mu-list-item>
+			
+			<mu-divider />
+			<mu-sub-header>Mode</mu-sub-header>
+			
+			<mu-list-item disable-ripple>
+				<mu-select-field v-model="game1">
+					<mu-menu-item v-for="text,index in list" :key="index" :value="index" :title="text" />
+				</mu-select-field>
+			</mu-list-item>
+			
+			<mu-divider />
+			<mu-sub-header>Infomation</mu-sub-header>
+			
+			<mu-list-item title="Mac:" :after-text="mac">
+			</mu-list-item>
+			<mu-list-item title="IP:" :after-text="ip">
+			</mu-list-item>
+			<mu-list-item title="Status:" :after-text="status">
+			</mu-list-item>
+			<mu-list-item title="Hardware Serial Number:" :after-text="hwsn">
+			</mu-list-item>
+			<mu-list-item title="Software Version:" :after-text="swv">
+			</mu-list-item>
 		</mu-list>
-		<mu-divider />
-		<mu-list>
-			<mu-sub-header>声音开启设置</mu-sub-header>
-			<mu-list-item disableRipple @click="handleToggle('events')" title="事件和提醒">
-				<mu-switch v-model="events"  slot="right"/>
-			</mu-list-item>
-			<mu-list-item disableRipple @click="handleToggle('calls')" title="电话">
-				<mu-switch v-model="calls" slot="right"/>
-			</mu-list-item>
-			<mu-list-item disableRipple @click="handleToggle('messages')" title="信息">
-				<mu-switch v-model="messages" slot="right"/>
-			</mu-list-item>
-		</mu-list>
-		<mu-list>
-			<mu-sub-header>通知设置</mu-sub-header>
-			<mu-list-item disableRipple @click="handleToggle('notifications')"  title="通知">
-				<mu-checkbox v-model="notifications" slot="left"/>
-			</mu-list-item>
-			<mu-list-item disableRipple @click="handleToggle('sounds')"  title="声音">
-				<mu-checkbox v-model="sounds" slot="left"/>
-			</mu-list-item>
-			<mu-list-item disableRipple @click="handleToggle('videoSounds')" title="视频的声音">
-				<mu-checkbox v-model="videoSounds" slot="left"/>
-			</mu-list-item>
-		</mu-list>
+		<mu-dialog :open="restartO" title="REStart???" @close="toggleRestartDialog()">
+			Are you sure to restart your device?
+			<mu-flat-button slot="actions" @click="toggleRestartDialog()" primary label="取消"/>
+			<mu-flat-button slot="actions" primary @click="restart()" label="确定"/>
+		</mu-dialog>
+		<mu-dialog :open="resetO" title="Reset???" @close="toggleResetDialog()" title-class="warning-text" body-class="warning-text">
+			Are you sure to reset your device?
+			<mu-flat-button slot="actions" @click="toggleResetDialog()" label="取消"/>
+			<mu-flat-button slot="actions" primary @click="reset0()" label="确定" class="warning-text"/>
+		</mu-dialog>
+		<mu-dialog :open="resetOd" title="Last WARNING!!!" @close="toggleResetdDialog()" title-class="warning-text" body-class="warning-text">
+			Are you sure to reset your device?
+			<mu-flat-button slot="actions" @click="toggleResetdDialog()" label="取消"/>
+			<mu-flat-button slot="actions" primary @click="reset()" label="确定" class="warning-text"/>
+		</mu-dialog>
 	</template>
 	<script>
 		{
 			data () {
 				return {
-					events: false,
-					calls: false,
-					messages: false,
-					notifications: false,
-					sounds: false,
-					videoSounds: false
+					restartO: false,
+					resetO: false,
+					resetOd: false,
+					game1: 0,
+					list: ['AP','STA'],
+					mac: "00-00-00-00-00",
+					ip: "192.168.1.111",
+					status: "Online, Local",
+					hwsn: "000001", // Hardware Serial Number
+					swv: "v0.1" // Software Version
 				}
 			},
 			methods: {
-				handleToggle (key) {
-					this[key] = !this[key]
+				toggleRestartDialog() {
+					this.restartO = !this.restartO;
+				},
+				toggleResetDialog() {
+					this.resetO = !this.resetO;
+				},
+				toggleResetdDialog() {
+					this.resetOd = !this.resetOd;
+				},
+				reset0() {
+					this.resetO = false;
+					this.resetOd = true;
+				},
+				restart() {
+					this.restartO = false;
+				},
+				reset() {
+					this.resetOd = false;
 				}
 			}
 		}
 	</script>
 	<style>
+		.warning-text {
+			color: #FF0000
+		}
 	</style>
 </settings>

@@ -8,29 +8,27 @@ requirejs.config({
 		axios: "https://unpkg.com/axios/dist/axios.min"
 	}
 });
-requirejs(["polyfill", "vue", "vue-router", "vconsole", "muse", "component"], function(pf, Vue, Router, VConsole, Muse, cp) {
+console.timeStamp("requirejs loaded", true);
+requirejs(["polyfill", "vue", "vue-router", "vconsole", "muse", "component" ,"utils"], function(pf, Vue, Router, VConsole, Muse, cp, utils) {
+	console.timeStamp("main start", true);
 	let vc = new VConsole();
 	Vue.use(Router);
 	Vue.use(Muse);
 	
-	const Foo = { template: '<error></error>' }
-	const Bar = { template: '<div>bar</div>' }
-	
-	
-	cp.loadComponent("/js/component.html", (c)=>{
+	cp.loadComponent("/js/component.html").then(c=>{
+		console.timeStamp("component loaded");
 		console.log(c);
-		window.c = c
 		
 		const routes = [
 			{
 				path: '/settings',
-				component: {template: "<settings></settings>"}
+				component: {template: "<settings/>"}
 			}, {
-				path: '/user/:id',
-				component: Foo
+				path: '/signin',
+				component: {template: "<sign-in/>"}
 			}, {
-				path: '/home',
-				component: Bar
+				path: '/signup',
+				component: {template: "<sign-up/>"}
 			}, {
 				path: '*',
 				component: c.error
@@ -47,25 +45,13 @@ requirejs(["polyfill", "vue", "vue-router", "vconsole", "muse", "component"], fu
 		for (let com in c) {
 			let comp = c[com];
 			Vue.component(comp.name, comp);
-		}
+		};
 	
 		const app = new Vue({
 			router
 		}).$mount('#app');
-	},e=>console.log(e.message));
-	
-	window.pss = n => {
-		let t = [];
-		for(let i=2;i<n+1;i++) {
-			let f = true;
-			for(let j=2;j<Math.floor(Math.sqrt(i))+1;j++) {
-				if(i%j == 0) {
-					f = false;
-				}
-			}
-			if(f)
-				t.push(i)
-		}
-		return t;
-	}
+		console.timeStamp("vue configed");
+	}).catch(e=>{
+		console.log(e.message)
+	});
 });

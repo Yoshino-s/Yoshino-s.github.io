@@ -4,6 +4,14 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0, user-scalable=no"/>
 	<title>Material Design</title>
+	<script>
+		console.timeStamp = (()=>{
+			let lastTimeStamp = Date.now(),
+				storage = [];
+			return (s, st=false) => {
+				let n=Date.now();(st?_=>storage.push(_):(storage.forEach(_=>console.info(_)),storage=[],console.info))("Tag: "+s+";Now: "+n+";From last: "+(n-lastTimeStamp));lastTimeStamp=n;}
+		})();
+	</script>
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,400italic,normal">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 	<link rel="stylesheet" href="/css/customize.css">

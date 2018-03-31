@@ -27,7 +27,11 @@
 					<mu-icon slot="left" value="home"/>
 				</mu-list-item>
 				
-				<mu-list-item title="My Home" to="/user/56">
+				<mu-list-item title="Sign in" to="/signin">
+					<mu-icon slot="left" value="person"/>
+				</mu-list-item>
+				
+				<mu-list-item title="Sign up" to="/signup">
 					<mu-icon slot="left" value="person"/>
 				</mu-list-item>
 				
@@ -75,8 +79,8 @@
 			<mu-sub-header>SSID & Password</mu-sub-header>
 			
 			<mu-list-item disable-ripple>
-				<mu-text-field hint-text="SSID" type="text" label="SSID"/>
-				<mu-text-field hint-text="Password" type="password" label="Password"/>
+				<mu-text-field hint-text="SSID" type="text" label="SSID" full-width/>
+				<mu-text-field hint-text="Password" type="password" label="Password" full-width/>
 			</mu-list-item>
 			
 			<mu-divider />
@@ -163,3 +167,26 @@
 		}
 	</style>
 </settings>
+<sign-in>
+	<template>
+		<div class="sign-in">
+			<mu-text-field hint-text="User Name" type="text" label="SSID" full-width/>
+			<mu-text-field hint-text="Password" type="password" label="Password" full-width/>
+			<mu-raised-button label="Sign in"  secondary full-width/>
+			<router-link to="/forgetpwd">Forget the password</router-link>
+		</div>
+	</template>
+	<style>
+		.sign-in {
+			width: -moz-fit-content;
+			width:-webkit-fit-content;
+			width: fit-content;
+			
+			max-width: 
+			margin-left: auto;
+			margin-right: auto;
+		}
+	</style>
+</sign-in>
+<sign-up>
+</sign-up>

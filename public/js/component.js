@@ -1,4 +1,4 @@
-define(["vue", "utils", "axios"], function(Vue, utils, axios) {
+define(["vue", "utils", "axios", "dragable"], function(Vue, utils, axios, dragable) {
 	const STYLE_ELEMENT_ID = "component-styles";
 	let styleElement = null
 	const fastEval = e => {
@@ -32,7 +32,7 @@ define(["vue", "utils", "axios"], function(Vue, utils, axios) {
 			let comp = comps[i],
 				name = comp.nodeName.toLowerCase(),
 				t_n = comp.querySelector("template"),
-				template = (t_n && t_n.innerHTML.trim() && '<div>' + t_n.innerHTML.trim() + '</div>') || '' ,
+				template = (t_n && t_n.innerHTML.trim() && ((t_n.content.childNodes.length > 1) ? '<div>' + t_n.innerHTML.trim() + '</div>' : t_n.innerHTML.trim())) || '' ,
 				s_n = comp.querySelector("script"),
 				script = (s_n && s_n.innerHTML.trim() && '(' + s_n.innerHTML.trim() + ')') || '',
 				cp = script && fastEval(script),
@@ -45,6 +45,7 @@ define(["vue", "utils", "axios"], function(Vue, utils, axios) {
 			cp.name = name;
 			components[name] = cp;
 		}
+		components["dragable"] = dragable;
 		return components
 	})
 	

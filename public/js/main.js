@@ -5,7 +5,9 @@ requirejs.config({
 		'vue-router': "https://unpkg.com/vue-router/dist/vue-router",
 		vconsole: "https://unpkg.com/vconsole/dist/vconsole.min",
 		muse: "https://unpkg.com/muse-ui/dist/muse-ui",
-		axios: "https://unpkg.com/axios/dist/axios.min"
+		axios: "https://unpkg.com/axios/dist/axios.min",
+		sortablejs: "https://cdn.jsdelivr.net/npm/sortablejs@1.7.0/Sortable.min",
+		dragable: "https://cdnjs.cloudflare.com/ajax/libs/Vue.Draggable/2.16.0/vuedraggable.min"
 	}
 });
 console.timeStamp("requirejs loaded", true);
@@ -30,6 +32,12 @@ requirejs(["polyfill", "vue", "vue-router", "vconsole", "muse", "component" ,"ut
 				path: '/signup',
 				component: {template: "<sign-up/>"}
 			}, {
+				path: '/devices',
+				component: {template: "<device-list/>"}
+			}, {
+				path: '/adddevice',
+				component: {template: "<add-device/>"}
+			}, {
 				path: '*',
 				component: c.error
 			}
@@ -48,7 +56,10 @@ requirejs(["polyfill", "vue", "vue-router", "vconsole", "muse", "component" ,"ut
 		};
 	
 		const app = new Vue({
-			router
+			router,
+			data: {
+				headerMenu: []
+			}
 		}).$mount('#app');
 		console.timeStamp("vue configed");
 	}).catch(e=>{

@@ -19,11 +19,11 @@
 	<template>
 		<mu-appbar :title="$route.params.id">
 			<mu-icon-button icon="menu" slot="left" @click="toggle()"/>
-			<mu-icon-button icon="expand_more" slot="right"/>
+			<mu-icon-button icon="expand_more" slot="right" ref="more" @click="toggleMore()"/>
 		</mu-appbar>
 		<mu-drawer :open="open" :docked="false" @close="toggle()">
 			<mu-list class="drawer-list" @item-click="toggle()">
-				<mu-list-item title="Main Page" to="/home">
+				<mu-list-item title="Main Page" to="/devices">
 					<mu-icon slot="left" value="home"/>
 				</mu-list-item>
 				
@@ -40,18 +40,40 @@
 				</mu-list-item>
 			</mu-list>
 		</mu-drawer>
+		<mu-popover :trigger="trigger" :open="moreOpen" @close="handleClose">
+			<mu-menu>
+				<mu-menu-item v-for="(item, index) in menuItem" :key="index" v-bind="item"/>
+			</mu-menu>
+		</mu-popover>
 	</template>
 	<script>
 		{
+			props: {
+				menuItem: {
+					type: Array,
+					required: true
+				}
+			},
 			data() {
 				return {
-					open: false
+					open: false,
+					moreOpen: false,
+					trigger: null,
 				}
 			},
 			methods: {
 				toggle() {
 					this.open = !this.open;
+				},
+				toggleMore() {
+					this.moreOpen = !this.moreOpen;
+				},
+				handleClose() {
+					this.moreOpen = false;
 				}
+			},
+			mounted() {
+				this.trigger = this.$refs.more.$el;
 			}
 		}
 	</script>
@@ -169,20 +191,21 @@
 </settings>
 <sign-in>
 	<template>
-		<div class="sign-in">
+		<mu-paper class="sign-in" :z-depth="1">
+			<mu-content-block>
 			<mu-text-field hint-text="User Name" type="text" label="SSID" full-width/>
 			<mu-text-field hint-text="Password" type="password" label="Password" full-width/>
 			<mu-raised-button label="Sign in"  secondary full-width/>
 			<router-link to="/forgetpwd">Forget the password</router-link>
-		</div>
+			</mu-content-block>
+		</mu-paper>
 	</template>
 	<style>
 		.sign-in {
 			width: -moz-fit-content;
-			width:-webkit-fit-content;
+			width: -webkit-fit-content;
 			width: fit-content;
 			
-			max-width: 
 			margin-left: auto;
 			margin-right: auto;
 		}
@@ -190,3 +213,75 @@
 </sign-in>
 <sign-up>
 </sign-up>
+<device-list>
+	<template>
+		<draggable element="mu-grid-list" v-model="tiles" :options="{draggable:'.item'}" :component-data="getComponentData()">
+				<div class="mu-grid-tile item" v-for="(tile, index) in tiles" :key="index" style="width: 33.3333%; padding: 2px; height: 120px;">
+					<transition name="fade">
+						<img src="/data/light.jpg" v-if="imageType" key="light" @click="toggleImage()"/>
+						<img src="/data/dark.jpg" v-else key="dark" @click="toggleImage()"/>
+					</transition>
+					<div class="mu-grid-tile-titlebar">
+						<div class="mu-grid-tile-title-container">
+							<div class="mu-grid-tile-title">
+								<span>{{tile.title}}</span>
+							</div>
+						</div>
+					</div>
+				</div>
+		</draggable>
+		<mu-float-button icon="add" class="fab-fixed" to="/adddevice"/>
+	</template>
+	<script>
+		{
+			data() {
+				return {
+					imageType: 1,
+					tiles: [
+						{title:11},
+						{title:11},
+						{title:11},
+						
+					],
+				}
+			},
+			methods: {
+				toggleImage() {
+					this.imageType = !this.imageType;
+				},
+				getComponentData() {
+					return {
+						props: {
+							cols: 3,
+							cellHeight: 120
+						}
+					}
+				}
+			}
+		}
+	</script>
+	<style>
+		.fade-enter-active, .fade-leave-active {
+			color: #f00;
+			transition: opacity .3s ease;
+		}
+		.fade-enter, .fade-leave-to {
+			opacity: 0;
+		}
+		.fab-fixed {
+			position: fixed !important;
+			right: 16px;
+			bottom: 16px;
+		}
+		@media (min-width: 1024px) {
+			.fab-fixed {
+				right: 24px;
+				bottom: 24px;
+			}
+		}
+	</style>
+</device-list>
+<add-device>
+	<template>
+	</template>
+</add-device>

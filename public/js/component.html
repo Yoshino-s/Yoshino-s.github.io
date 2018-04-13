@@ -215,20 +215,15 @@
 </sign-up>
 <device-list>
 	<template>
-		<draggable element="mu-grid-list" v-model="tiles" :options="{draggable:'.item'}" :component-data="getComponentData()">
-				<div class="mu-grid-tile item" v-for="(tile, index) in tiles" :key="index" style="width: 33.3333%; padding: 2px; height: 120px;">
+		<draggable element="ul" v-model="tiles">
+			 <transition-group name="flip-list" tag="ul" class="grid-list">
+				<li v-for="(tile, index) in tiles" :key="tile.title" class="grid-tile">
 					<transition name="fade">
 						<img src="/data/light.jpg" v-if="imageType" key="light" @click="toggleImage()"/>
 						<img src="/data/dark.jpg" v-else key="dark" @click="toggleImage()"/>
 					</transition>
-					<div class="mu-grid-tile-titlebar">
-						<div class="mu-grid-tile-title-container">
-							<div class="mu-grid-tile-title">
-								<span>{{tile.title}}</span>
-							</div>
-						</div>
-					</div>
-				</div>
+				</li>
+			</transition-group>
 		</draggable>
 		<mu-float-button icon="add" class="fab-fixed" to="/adddevice"/>
 	</template>
@@ -238,9 +233,9 @@
 				return {
 					imageType: 1,
 					tiles: [
-						{title:11},
-						{title:11},
-						{title:11},
+						{title:1},
+						{title:2},
+						{title:3},
 						
 					],
 				}
@@ -278,6 +273,23 @@
 				right: 24px;
 				bottom: 24px;
 			}
+		}
+		
+		.flip-list-move {
+			transition: transform 1s;
+		}
+		
+		.grid-list {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			
+		}
+		.grid-tile {
+			height: 120px;
+			list-style: none;
+		}
+		.grid-tile>img {
+			height: 100%;
 		}
 	</style>
 </device-list>

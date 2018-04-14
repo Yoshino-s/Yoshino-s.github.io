@@ -86,9 +86,20 @@
 
 <settings>
 	<template>
-		<mu-list>
+		<div class="setting-list">
 			<mu-sub-header>Control</mu-sub-header>
-			
+					<div class="setting-item show-left">
+						<div class="setting-item-left">
+							<mu-icon value="refreshing"/>
+						</div>
+						<div class="mu-item-content">
+							<div class="mu-item-title-row">
+								<div class="mu-item-title">
+									Restart
+								</div>
+							</div>
+						</div>
+					</div>
 			<mu-list-item title="Restart" @click="toggleRestartDialog()">
 				<mu-icon slot="left" value="refreshing"/>
 			</mu-list-item>
@@ -127,7 +138,8 @@
 			</mu-list-item>
 			<mu-list-item title="Software Version:" :after-text="swv">
 			</mu-list-item>
-		</mu-list>
+			
+		</div>
 		<mu-dialog :open="restartO" title="REStart???" @close="toggleRestartDialog()">
 			Are you sure to restart your device?
 			<mu-flat-button slot="actions" @click="toggleRestartDialog()" primary label="取消"/>
@@ -187,6 +199,33 @@
 		.warning-text {
 			color: #FF0000
 		}
+		
+		.setting-list {
+			display: grid;
+			grid-template-columns: 1fr;
+		}
+		
+		.setting-item {
+			min-height: 48px;
+			display: flex;
+			padding: 16px 16px;
+			position: relative;
+		}
+		.setting-item.show-left {
+			padding-left: 72px;
+		}
+		.setting-item-left {
+			display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 40px;
+  height: 100%;
+  position: absolute;
+  color: @grey600;
+  top: 0;
+  max-height: 72px;
+			left: 16px;
+		}
 	</style>
 </settings>
 <sign-in>
@@ -215,14 +254,19 @@
 </sign-up>
 <device-list>
 	<template>
-		<draggable element="ul" v-model="tiles">
-			 <transition-group name="flip-list" tag="ul" class="grid-list">
-				<li v-for="(tile, index) in tiles" :key="tile.title" class="grid-tile">
+		<draggable v-model="tiles" class="mu-content-block">
+			 <transition-group name="flip-list" tag="div" class="grid-list">
+				<div v-for="(tile, index) in tiles" :key="tile.id" class="grid-tile mu-paper-1">
 					<transition name="fade">
-						<img src="/data/light.jpg" v-if="imageType" key="light" @click="toggleImage()"/>
-						<img src="/data/dark.jpg" v-else key="dark" @click="toggleImage()"/>
+						<img src="/data/light.jpg" v-if="tile.open" key="light" @click="tile.open=false"/>
+						<img src="/data/dark.jpg" v-else key="dark" @click="tile.open=true"/>
 					</transition>
-				</li>
+					<div class="grid-tile-titlebar" @click="$router.push(`/device/${tile.id}`)">
+						<div class="grid-tile-title">
+							{{ tile.title }}
+						</div>
+					</div>
+				</div>
 			</transition-group>
 		</draggable>
 		<mu-float-button icon="add" class="fab-fixed" to="/adddevice"/>
@@ -231,26 +275,19 @@
 		{
 			data() {
 				return {
-					imageType: 1,
 					tiles: [
-						{title:1},
-						{title:2},
-						{title:3},
-						
+						{title:"light", id:0, open:false},
+						{title:"tv", id:1, open:false},
+						{title:"aircrafter", id:2, open:true},
+						{title:"audio", id:3, open:false},
+						{title:"light1", id:4, open:true},
+						{title:"light2", id:5, open:false},
 					],
 				}
 			},
 			methods: {
 				toggleImage() {
 					this.imageType = !this.imageType;
-				},
-				getComponentData() {
-					return {
-						props: {
-							cols: 3,
-							cellHeight: 120
-						}
-					}
 				}
 			}
 		}
@@ -280,16 +317,45 @@
 		}
 		
 		.grid-list {
+			list-style: none;
+			
 			display: grid;
 			grid-template-columns: repeat(3, 1fr);
-			
+			grid-gap: 1em;
 		}
 		.grid-tile {
-			height: 120px;
-			list-style: none;
+			border-radius: 2px;
+			height: 7em;
+			
+			position: relative;
+			overflow: hidden;
+			display: block;
 		}
 		.grid-tile>img {
-			height: 100%;
+			width: 100%;
+		}
+		
+		.grid-tile-titlebar {
+			position: absolute;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			height: 3em;
+			background-color: rgba(0, 0, 0, 0.4);
+			
+			display: flex;
+			align-items: center;
+		}
+		
+		.grid-tile-title {
+			margin-left: 1em;
+			
+			color: #eee;
+			font-size: 1em;
+			text-overflow: ellipsis;
+			overflow: hidden;
+			white-space: nowrap;
+			word-wrap: break-word;
 		}
 	</style>
 </device-list>

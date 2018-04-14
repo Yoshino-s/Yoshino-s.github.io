@@ -294,7 +294,6 @@
 	</script>
 	<style>
 		.fade-enter-active, .fade-leave-active {
-			color: #f00;
 			transition: opacity .3s ease;
 		}
 		.fade-enter, .fade-leave-to {
@@ -363,3 +362,100 @@
 	<template>
 	</template>
 </add-device>
+<device>
+	<template>
+		<mu-tabs :value="activeTab" @change="handleTabChange">
+			<mu-tab value="power" title="Power"/>
+			<mu-tab value="timer" title="Timer"/>
+			<mu-tab value="option" title="Option"/>
+		</mu-tabs>
+		<div class="tab-content">
+			<transition name="fade-in-out" enter-active-class="animated fadeInRight" leave-active-class="abs animated fadeOutLeft" mode="">
+				<component :is="'device-'+activeTab"/>
+			</transition>
+		</div>
+	</template>
+	<script>
+		{
+			data() {
+				return {
+					activeTab: "power"
+				}
+			},
+			methods: {
+				handleTabChange(val) {
+					this.activeTab = val;
+				}
+			}
+		}
+	</script>
+	<style>
+		.tab-content {
+			border: 1px solid #0f0;
+			position: relative;
+		}
+		.abs {
+			position: absolute;
+			top: 0;
+		}
+		.tab-content>div {
+			border: 1px solid #f00;
+			top: 0;
+			width: 100%;
+			-moz-animation-duration: .5s;
+		}
+	</style>
+</device>
+<device-power>
+	<template>
+		<div class="power-container">
+			<mu-float-button icon="add" icon-class="power-center-icon" class="power-center"/>
+		</div>
+	</template>
+	<script>
+	</script>
+	<style>
+		:root {
+			--power-center-size: 6em;
+		}
+		.power-container {
+			background-color: #00f;
+			position: relative;
+			margin: 0 auto;
+			text-align: center;
+		}
+		.power-center-icon {
+			font-size: var(--power-center-size);
+			
+		}
+		.power-center {
+			border: 5px solid #00f;
+			position: relative;
+			margin-top: calc(100%-var(--power-center-size)/2);
+			width: var(--power-center-size);
+			height: var(--power-center-size);
+		}
+	</style>
+</device-power>
+<device-timer>
+	<template>
+		<div>
+			466
+		</div>
+	</template>
+	<script>
+	</script>
+	<style>
+	</style>
+</device-timer>
+<device-option>
+	<template>
+		<span>
+			699
+		</span>
+	</template>
+	<script>
+	</script>
+	<style>
+	</style>
+</device-option>

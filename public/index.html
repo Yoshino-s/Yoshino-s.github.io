@@ -9,12 +9,14 @@
 			let lastTimeStamp = Date.now(),
 				storage = [];
 			return (s, st=false) => {
-				let n=Date.now();(st?_=>storage.push(_):(storage.forEach(_=>console.info(_)),storage=[],console.info))("Tag: "+s+";Now: "+n+";From last: "+(n-lastTimeStamp));lastTimeStamp=n;}
+				let n=Date.now();(st?storage.push.bind(storage):(storage.forEach(_=>console.info(_)),storage=[],console.info))("Tag: "+s+";Now: "+n+";From last: "+(n-lastTimeStamp));lastTimeStamp=n;}
 		})();
 	</script>
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,400italic,normal">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 	<link rel="stylesheet" href="/js/lib/muse-ui.css">
+	<link rel="stylesheet" href="/css/github-markdown.css">
+	<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/styles/github.min.css">
 	<link href="https://cdn.jsdelivr.net/npm/animate.css@3.5.1" rel="stylesheet" type="text/css">
 	<script data-main="/js/main" src="/js/lib/require.min.js"></script>
 </head>

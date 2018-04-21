@@ -17,6 +17,7 @@
 
 <header-drawer>
 	<template>
+		<mu-linear-progress :size="3" id="global-progressbar" color="blue"/>
 		<mu-appbar :title="$route.params.id">
 			<mu-icon-button icon="menu" slot="left" @click="toggle()"/>
 			<mu-icon-button icon="expand_more" slot="right" ref="more" @click="toggleMore()"/>
@@ -80,6 +81,11 @@
 	<style>
 		.drawer-list .router-link-active {
 			font-weight: 500;
+		}
+		#global-progressbar {
+			position: absolute;
+			top:0;
+			width: 100%;
 		}
 	</style>
 </header-drawer>
@@ -316,8 +322,6 @@
 		}
 		
 		.grid-list {
-			list-style: none;
-			
 			display: grid;
 			grid-template-columns: repeat(3, 1fr);
 			grid-gap: 1em;
@@ -391,59 +395,167 @@
 	</script>
 	<style>
 		.tab-content {
-			border: 1px solid #0f0;
 			position: relative;
+			-moz-animation-duration: .5s;
+			top: 0;
+			width: 100%;
 		}
 		.abs {
 			position: absolute;
 			top: 0;
 		}
-		.tab-content>div {
-			border: 1px solid #f00;
-			top: 0;
-			width: 100%;
-			-moz-animation-duration: .5s;
-		}
 	</style>
 </device>
 <device-power>
 	<template>
-		<div class="power-container">
-			<mu-float-button icon="add" icon-class="power-center-icon" class="power-center"/>
+		<div class="mu-paper-2 power-paper">
+			<transition-group name="flip-list" tag="div" class="power-container">
+				<div v-for="(item, index) in gridList" :key="item.id" class="power-item" @click="exchange(index)">
+					<img :src="'/data/cut/'+type+'-'+item.id+'.png'" class="power-item-img" :key="type" v-if="item.id!=0"/>
+					<div v-else-if="showZero" class="zero-container">
+						<mu-float-button icon="add" mini class="pwr-0-btn"/>
+						<mu-float-button icon="add" mini class="pwr-0-btn"/>
+						<mu-float-button icon="add" mini class="pwr-0-btn"/>
+						<mu-float-button icon="add" mini class="pwr-0-btn"/>
+					</div>
+				</div>
+			</transition-group>
+			<mu-float-button icon="add" class="pwr-btn" @click="type=(type=='dark')?'light':'dark'"/>
+		</div>
+		<div class="mu-paper-2 power-paper" id="power-paper-2">
+			
 		</div>
 	</template>
 	<script>
+		{
+			data() {
+				let ret = {
+					gridList: [],
+					lastClick: Date.now(),
+					showZero: false,
+					type: "dark"
+				};
+				for(var i=0;i<9;i++)
+					ret.gridList.push({id:i,name:i.toString()});
+				return ret;
+			},
+			mounted() {
+				let chart = echarts.init(document.getElementById("power-paper-2"));
+				var option = {
+					title: {text: 'ECharts 入门示例'},
+					tooltip: {
+						trigger: "axis"
+					},
+					legend: {
+						data:['alpha']
+					},
+					xAxis: {
+						data: []
+					},
+					yAxis: {
+						type: "value"
+					},
+					series: [{
+						name: "alpha",
+						type: 'line',
+						step: "middle",
+						data: [1,1,0,0,1,1,0]
+					}]
+        		};
+        		chart.setOption(option);
+			},
+			methods: {
+				exchange(key) {
+					let x = Math.floor(key / 3),
+						y = key % 3,
+						dir = [[0,1],[0,-1],[1,0],[-1,0]],
+						item = this.gridList[key];
+					if(item.id == 0) {
+						let thisClick = Date.now();
+						console.log(thisClick - this.lastClick);
+						if(thisClick - this.lastClick <= 500) {
+							//double click
+							this.showZero = true;
+						}
+						this.lastClick = thisClick;
+					}else {
+						this.showZero = false;
+						for(let d in dir) {
+							let nKey = (x+dir[d][0])*3 + (y+dir[d][1]);
+							if(nKey<0 || nKey>8)
+								continue;
+							if(this.gridList[nKey].name == "0") {
+								let t = this.gridList[nKey];
+								this.gridList.splice(nKey, 1, this.gridList[key]);
+								this.gridList.splice(key, 1, t);
+							}
+						}
+					}
+				}
+			}
+		}
 	</script>
 	<style>
-		:root {
-			--power-center-size: 6em;
-		}
-		.power-container {
-			background-color: #00f;
+		.power-paper {
+			margin: 1em .25em;
+			padding: .25em;
 			position: relative;
-			margin: 0 auto;
-			text-align: center;
 		}
-		.power-center-icon {
-			font-size: var(--power-center-size);
+		
+		#power-paper-2 {
+			height: 20em;
+		}
+		
+		.power-container {
+			width: 100%;
+			height: 100%;
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			grid-template-rows: repeat(3, 1fr);
+		}
+		.power-item {
+			position: relative;
+			width: 100%;
+			height: calc((100vw - 1em) / 3);
+			
 			
 		}
-		.power-center {
-			border: 5px solid #00f;
-			position: relative;
-			margin-top: calc(100%-var(--power-center-size)/2);
-			width: var(--power-center-size);
-			height: var(--power-center-size);
+		.power-item-img {
+			height: 100%;
+		}
+		.zero-container {
+			height: 100%;
+			width: 100%;
+			
+			display: grid;
+			grid-template-columns: repeat(2, 1fr);
+			grid-template-rows: repeat(2, 1fr);
+			
+			justify-items: center;
+			align-items: center;
+		}
+		.pwr-btn {
+			position: absolute;
+			
+			left: calc(50% - 28px);
+			bottom: calc(50% - 28px);
 		}
 	</style>
 </device-power>
 <device-timer>
 	<template>
-		<div>
-			466
+		<div v-html="$marked(t)" class="markdown-body mu-content-block">
+			
 		</div>
 	</template>
 	<script>
+		{
+			data() {
+				console.log(666);
+				axios.get("https://raw.githubusercontent.com/markedjs/marked/master/docs/README.md").then(t=>{this.t = t.data;}).catch(e=>console.log(e.status));
+				return {t:""}
+			}
+		}
 	</script>
 	<style>
 	</style>

@@ -1,14 +1,16 @@
 requirejs.config({
 	paths: {
 		polyfill: "https://cdn.polyfill.io/v2/polyfill.min",
-		vue: "https://vuejs.org/js/vue",
-		'vue-router': "https://unpkg.com/vue-router/dist/vue-router",
-		vconsole: "https://unpkg.com/vconsole/dist/vconsole.min",
-		muse: "https://unpkg.com/muse-ui/dist/muse-ui",
-		axios: "https://unpkg.com/axios/dist/axios.min",
-		sortablejs: "https://cdn.jsdelivr.net/npm/sortablejs@1.7.0/Sortable.min",
-		dragable: "https://cdnjs.cloudflare.com/ajax/libs/Vue.Draggable/2.16.0/vuedraggable.min",
-		echarts: "https://cdnjs.cloudflare.com/ajax/libs/echarts/4.0.4/echarts"
+		vue: "https://cdn.jsdelivr.net/npm/vue/dist/vue",
+		'vue-router': "https://cdn.jsdelivr.net/npm/vue-router/dist/vue-router.min",
+		vconsole: "https://cdn.jsdelivr.net/npm/vconsole/dist/vconsole.min",
+		muse: "https://cdn.jsdelivr.net/npm/muse-ui/dist/muse-ui",
+		axios: "https://cdn.jsdelivr.net/npm/axios/dist/axios.min",
+		sortablejs: "https://cdn.jsdelivr.net/npm/sortablejs/Sortable.min",
+		dragable: "https://cdn.jsdelivr.net/npm/vuedraggable/dist/vuedraggable.min",
+		echarts: "https://cdn.jsdelivr.net/npm/echarts/dist/echarts.common.min",
+		marked: "https://cdn.jsdelivr.net/npm/marked/marked.min",
+		highlightjs: "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/highlight.min"
 	}
 });
 console.timeStamp("requirejs loaded", true);

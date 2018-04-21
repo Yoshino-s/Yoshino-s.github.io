@@ -1,4 +1,4 @@
-define(["vue", "utils", "axios", "dragable"], function(Vue, utils, axios, dragable) {
+define(["vue", "utils", "axios", "dragable", "echarts"], function(Vue, utils, axios, dragable, echarts) {
 	const STYLE_ELEMENT_ID = "component-styles";
 	let styleElement = null
 	const fastEval = e => {

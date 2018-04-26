@@ -1,3 +1,57 @@
+<global>
+	<style>
+		#global-progressbar {
+			z-index: 2;
+			position: fixed;
+			top:0;
+			width: 100%;
+		}
+		#global-appbar {
+			z-index: 1;
+			position: fixed;
+			top:0;
+			width: 100%;
+		}
+		.appbar-adjust {
+			height: 56px;
+			padding: 0 8px;
+			width: 100%;
+		}
+		@media (min-width: 480px) {
+			.appbar-adjust {
+				height: 64px;
+			}
+		}
+		.fade-enter-active, .fade-leave-active {
+			transition: opacity .3s ease;
+		}
+		.fade-enter, .fade-leave-to {
+			opacity: 0;
+		}
+		.fab-fixed {
+			position: fixed !important;
+			right: 16px;
+			bottom: 16px;
+		}
+		@media (min-width: 1024px) {
+			.fab-fixed {
+				right: 24px;
+				bottom: 24px;
+			}
+		}
+		
+		.flip-list-move {
+			transition: transform 1s;
+		}
+		
+		.content-paper {
+			border-radius: 2px;
+			margin: 1em .25em;
+			padding: .25em;
+			position: relative;
+		}
+	</style>
+</global>
 <error>
 	<template>
 		<mu-card>
@@ -18,25 +72,26 @@
 <header-drawer>
 	<template>
 		<mu-linear-progress :size="3" id="global-progressbar" color="blue"/>
-		<mu-appbar :title="$route.params.id">
+		<mu-appbar :title="$route.params.id" id="global-appbar">
 			<mu-icon-button icon="menu" slot="left" @click="toggle()"/>
 			<mu-icon-button icon="expand_more" slot="right" ref="more" @click="toggleMore()"/>
 		</mu-appbar>
+		<div class="appbar-adjust"></div>
 		<mu-drawer :open="open" :docked="false" @close="toggle()">
 			<mu-list class="drawer-list" @item-click="toggle()">
-				<mu-list-item title="Main Page" to="/devices">
+				<mu-list-item title="Main Page" to="/devices/">
 					<mu-icon slot="left" value="home"/>
 				</mu-list-item>
 				
-				<mu-list-item title="Sign in" to="/signin">
+				<mu-list-item title="Sign in" to="/signin/">
 					<mu-icon slot="left" value="person"/>
 				</mu-list-item>
 				
-				<mu-list-item title="Sign up" to="/signup">
+				<mu-list-item title="Sign up" to="/signup/">
 					<mu-icon slot="left" value="person"/>
 				</mu-list-item>
 				
-				<mu-list-item title="Settings" to="/settings">
+				<mu-list-item title="Settings" to="/settings/">
 					<mu-icon slot="left" value="settings"/>
 				</mu-list-item>
 			</mu-list>
@@ -49,17 +104,12 @@
 	</template>
 	<script>
 		{
-			props: {
-				menuItem: {
-					type: Array,
-					required: true
-				}
-			},
 			data() {
 				return {
 					open: false,
 					moreOpen: false,
 					trigger: null,
+					menuItem: []
 				}
 			},
 			methods: {
@@ -81,11 +131,6 @@
 	<style>
 		.drawer-list .router-link-active {
 			font-weight: 500;
-		}
-		#global-progressbar {
-			position: absolute;
-			top:0;
-			width: 100%;
 		}
 	</style>
 </header-drawer>
@@ -267,7 +312,7 @@
 						<img src="/data/light.jpg" v-if="tile.open" key="light" @click="tile.open=false"/>
 						<img src="/data/dark.jpg" v-else key="dark" @click="tile.open=true"/>
 					</transition>
-					<div class="grid-tile-titlebar" @click="$router.push(`/device/${tile.id}`)">
+					<div class="grid-tile-titlebar" @click="$router.push(`/device/${tile.id}/`)">
 						<div class="grid-tile-title">
 							{{ tile.title }}
 						</div>
@@ -275,7 +320,7 @@
 				</div>
 			</transition-group>
 		</draggable>
-		<mu-float-button icon="add" class="fab-fixed" to="/adddevice"/>
+		<mu-float-button icon="add" class="fab-fixed" to="/adddevice/"/>
 	</template>
 	<script>
 		{
@@ -299,28 +344,6 @@
 		}
 	</script>
 	<style>
-		.fade-enter-active, .fade-leave-active {
-			transition: opacity .3s ease;
-		}
-		.fade-enter, .fade-leave-to {
-			opacity: 0;
-		}
-		.fab-fixed {
-			position: fixed !important;
-			right: 16px;
-			bottom: 16px;
-		}
-		@media (min-width: 1024px) {
-			.fab-fixed {
-				right: 24px;
-				bottom: 24px;
-			}
-		}
-		
-		.flip-list-move {
-			transition: transform 1s;
-		}
-		
 		.grid-list {
 			display: grid;
 			grid-template-columns: repeat(3, 1fr);
@@ -368,11 +391,12 @@
 </add-device>
 <device>
 	<template>
-		<mu-tabs :value="activeTab" @change="handleTabChange">
+		<mu-tabs :value="activeTab" @change="handleTabChange" class="fixed-tabs">
 			<mu-tab value="power" title="Power"/>
 			<mu-tab value="timer" title="Timer"/>
 			<mu-tab value="option" title="Option"/>
 		</mu-tabs>
+		<div class="tabs-adjust"></div>
 		<div class="tab-content">
 			<transition name="fade-in-out" enter-active-class="animated fadeInRight" leave-active-class="abs animated fadeOutLeft" mode="">
 				<component :is="'device-'+activeTab"/>
@@ -394,6 +418,19 @@
 		}
 	</script>
 	<style>
+		.fixed-tabs {
+			position: fixed;
+			top:56px;
+			width: 100%;
+		}
+		@media (min-width: 480px) {
+			.fixed-tabs {
+				top:64px;
+			}
+		}
+		.tabs-adjust {
+			height: 48px;
+		}
 		.tab-content {
 			position: relative;
 			-moz-animation-duration: .5s;
@@ -408,8 +445,8 @@
 </device>
 <device-power>
 	<template>
-		<div class="mu-paper-2 power-paper">
-			<transition-group name="flip-list" tag="div" class="power-container">
+		<div class="mu-paper-2 content-paper">
+			<transition-group name="flip-list" tag="div" class="power-1-container">
 				<div v-for="(item, index) in gridList" :key="item.id" class="power-item" @click="exchange(index)">
 					<img :src="'/data/cut/'+type+'-'+item.id+'.png'" class="power-item-img" :key="type" v-if="item.id!=0"/>
 					<div v-else-if="showZero" class="zero-container">
@@ -422,8 +459,18 @@
 			</transition-group>
 			<mu-float-button icon="add" class="pwr-btn" @click="type=(type=='dark')?'light':'dark'"/>
 		</div>
-		<div class="mu-paper-2 power-paper" id="power-paper-2">
-			
+		<div class="mu-paper-2 content-paper" id="power-paper-2">
+		</div>
+		<div class="mu-paper-2 content-paper">
+			<mu-sub-header>Change Log</mu-sub-header>
+			<mu-list>
+				<mu-list-item title="On" after-text="12:00" disabled>
+					<mu-icon slot="left" value="power_settings_new" color="green"/>
+				</mu-list-item>
+				<mu-list-item title="Off" after-text="13:20">
+					<mu-icon slot="left" value="power_settings_new" color="red"/>
+				</mu-list-item>
+			</mu-list>
 		</div>
 	</template>
 	<script>
@@ -496,17 +543,13 @@
 		}
 	</script>
 	<style>
-		.power-paper {
-			margin: 1em .25em;
-			padding: .25em;
-			position: relative;
-		}
+		
 		
 		#power-paper-2 {
 			height: 20em;
 		}
 		
-		.power-container {
+		.power-1-container {
 			width: 100%;
 			height: 100%;
 			display: grid;
@@ -517,8 +560,6 @@
 			position: relative;
 			width: 100%;
 			height: calc((100vw - 1em) / 3);
-			
-			
 		}
 		.power-item-img {
 			height: 100%;
@@ -544,6 +585,38 @@
 </device-power>
 <device-timer>
 	<template>
+		<div class="mu-paper-2 content-paper">
+			<mu-sub-header>Change Log</mu-sub-header>
+			<mu-list>
+				<mu-list-item v-for="timer in timers" :key="timer.id" :title="timer.time" describe-text="Everyday" :to="'timer/'+timer.id">
+					<mu-icon slot="left" value="power_settings_new" :color="(timer.mode=='open')?'green':'red'"/>
+					<mu-switch v-model="timer.status" slot="right"/>
+				</mu-list-item>
+				
+			</mu-list>
+		</div>
+	</template>
+	<script>
+		{
+			data() {
+				let ret = {timers:[]}
+				for(let i = 0; i < 24;i++) {
+					ret.timers.push({
+						id: i,
+						time: (i<10?'0':'')+i+':00',
+						mode: (i%2==0)?'close':'open',
+						status: (i%2==0)?false:true
+					});
+				}
+				return ret;
+			}
+		}
+	</script>
+	<style>
+	</style>
+</device-timer>
+<device-option>
+	<template>
 		<div v-html="$marked(t)" class="markdown-body mu-content-block">
 			
 		</div>
@@ -559,15 +632,22 @@
 	</script>
 	<style>
 	</style>
-</device-timer>
-<device-option>
+</device-option>
+<timer-page>
 	<template>
-		<span>
-			699
-		</span>
+		<div v-html="$marked(t)" class="markdown-body mu-content-block">
+			
+		</div>
 	</template>
 	<script>
+		{
+			data() {
+				console.log(666);
+				axios.get("https://raw.githubusercontent.com/markedjs/marked/master/docs/README.md").then(t=>{this.t = t.data;}).catch(e=>console.log(e.status));
+				return {t:""}
+			}
+		}
 	</script>
 	<style>
 	</style>
-</device-option>
+</timer-page>

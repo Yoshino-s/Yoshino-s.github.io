@@ -26,23 +26,26 @@ requirejs(["polyfill", "vue", "vue-router", "vconsole", "muse", "component" ,"ut
 		
 		const routes = [
 			{
-				path: '/settings',
+				path: '/settings/',
 				component: {template: "<settings/>"}
 			}, {
-				path: '/signin',
+				path: '/signin/',
 				component: {template: "<sign-in/>"}
 			}, {
-				path: '/signup',
+				path: '/signup/',
 				component: {template: "<sign-up/>"}
 			}, {
-				path: '/devices',
+				path: '/devices/',
 				component: {template: "<device-list/>"}
 			}, {
-				path: '/adddevice',
+				path: '/adddevice/',
 				component: {template: "<add-device/>"}
 			}, {
-				path: '/device/:id',
+				path: '/device/:id/',
 				component: {template: "<device/>"}
+			}, {
+				path: '/device/:id/timer/:tmr_id',
+				component: {template: "<timer-page/>"}
 			}, {
 				path: '*',
 				component: c.error

@@ -39,6 +39,10 @@ define(["vue", "utils", "axios", "dragable", "echarts"], function(Vue, utils, ax
 				st_n = comp.querySelector("style"),
 				isScoped = (st_n && st_n.hasAttribute("scoped")),
 				style = (st_n && st_n.innerHTML.trim() + '\n') || '';
+			if(name === "global") {
+				addStyleToDocument(style);
+				continue;
+			}
 			cp = "object" !== typeof cp ? {} : cp;
 			addStyleToDocument(style);
 			cp.template = template;

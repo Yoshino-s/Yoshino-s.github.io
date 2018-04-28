@@ -47,7 +47,7 @@ define(["vue", "utils", "axios", "dragable", "echarts"], function(Vue, utils, ax
 			addStyleToDocument(style);
 			cp.template = template;
 			cp.name = name;
-			components[name] = cp;
+			components[utils.toCamelCase('-'+name)] = cp;
 		}
 		components["dragable"] = dragable;
 		return components

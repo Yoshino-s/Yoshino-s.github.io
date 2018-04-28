@@ -8,9 +8,11 @@
 		}
 		#global-appbar {
 			z-index: 1;
+			width: 100%;
+		}
+		.appbar-fixed {
 			position: fixed;
 			top:0;
-			width: 100%;
 		}
 		.appbar-adjust {
 			height: 56px;
@@ -72,13 +74,13 @@
 <header-drawer>
 	<template>
 		<mu-linear-progress :size="3" id="global-progressbar" color="blue"/>
-		<mu-appbar :title="$route.params.id" id="global-appbar">
-			<mu-icon-button icon="menu" slot="left" @click="toggle()"/>
+		<mu-appbar :title="$route.params.id" id="global-appbar" v-if="appbarShow" :class="appbarFixed?'appbar-fixed':''">
+			<mu-icon-button :icon="backMode?'arrow_back':'menu'" slot="left" @click="leftFunc()"/>
 			<mu-icon-button icon="expand_more" slot="right" ref="more" @click="toggleMore()"/>
 		</mu-appbar>
-		<div class="appbar-adjust"></div>
-		<mu-drawer :open="open" :docked="false" @close="toggle()">
-			<mu-list class="drawer-list" @item-click="toggle()">
+		<div class="appbar-adjust" v-if="appbarShow && appbarFixed"></div>
+		<mu-drawer :open="open" :docked="false" @close="open=false">
+			<mu-list class="drawer-list" @item-click="open=false">
 				<mu-list-item title="Main Page" to="/devices/">
 					<mu-icon slot="left" value="home"/>
 				</mu-list-item>
@@ -106,6 +108,9 @@
 		{
 			data() {
 				return {
+					appbarShow: true,
+					appbarFixed: true,
+					backMode: false,
 					open: false,
 					moreOpen: false,
 					trigger: null,
@@ -113,8 +118,12 @@
 				}
 			},
 			methods: {
-				toggle() {
-					this.open = !this.open;
+				leftFunc() {
+					if(this.backMode) {
+						this.$router.go(-1);
+					}else {
+						this.open = !this.open;
+					}
 				},
 				toggleMore() {
 					this.moreOpen = !this.moreOpen;
@@ -125,6 +134,29 @@
 			},
 			mounted() {
 				this.trigger = this.$refs.more.$el;
+			},
+			created() {
+				let _this = this;
+				this.$global.AppBar = {
+					get show() {
+						return _this.appbarShow
+					},
+					set show(v) {
+						_this.appbarShow = v;
+					},
+					get fixed() {
+						return _this.appbarFixed
+					},
+					set fixed(v) {
+						_this.appbarFixed = v;
+					},
+					get backMode() {
+						return _this.backMode
+					},
+					set backMode(v) {
+						_this.backMode = v;
+					},
+				}
 			}
 		}
 	</script>
@@ -391,15 +423,15 @@
 </add-device>
 <device>
 	<template>
-		<mu-tabs :value="activeTab" @change="handleTabChange" class="fixed-tabs">
-			<mu-tab value="power" title="Power"/>
-			<mu-tab value="timer" title="Timer"/>
-			<mu-tab value="option" title="Option"/>
+		<mu-tabs :value="activeTab" class="fixed-tabs" @change="handleTabChange">
+			<mu-tab value="power" title="Power" to="../power/"/>
+			<mu-tab value="timer" title="Timer" to="../timer/"/>
+			<mu-tab value="option" title="Option" to="../option/"/>
 		</mu-tabs>
 		<div class="tabs-adjust"></div>
 		<div class="tab-content">
 			<transition name="fade-in-out" enter-active-class="animated fadeInRight" leave-active-class="abs animated fadeOutLeft" mode="">
-				<component :is="'device-'+activeTab"/>
+				<router-view></router-view>
 			</transition>
 		</div>
 	</template>
@@ -588,7 +620,7 @@
 		<div class="mu-paper-2 content-paper">
 			<mu-sub-header>Change Log</mu-sub-header>
 			<mu-list>
-				<mu-list-item v-for="timer in timers" :key="timer.id" :title="timer.time" describe-text="Everyday" :to="'timer/'+timer.id">
+				<mu-list-item v-for="timer in timers" :key="timer.id" :title="timer.time" describe-text="Everyday" :to="timer.id+'/'">
 					<mu-icon slot="left" value="power_settings_new" :color="(timer.mode=='open')?'green':'red'"/>
 					<mu-switch v-model="timer.status" slot="right"/>
 				</mu-list-item>

@@ -27,28 +27,43 @@ requirejs(["polyfill", "vue", "vue-router", "vconsole", "muse", "component" ,"ut
 		const routes = [
 			{
 				path: '/settings/',
-				component: {template: "<settings/>"}
+				component: c.Settings
 			}, {
 				path: '/signin/',
-				component: {template: "<sign-in/>"}
+				component: c.SignIn
 			}, {
 				path: '/signup/',
-				component: {template: "<sign-up/>"}
+				component: c.SignUp
 			}, {
 				path: '/devices/',
-				component: {template: "<device-list/>"}
+				component: c.DeviceList
 			}, {
 				path: '/adddevice/',
-				component: {template: "<add-device/>"}
+				component: c.AddDevice
 			}, {
 				path: '/device/:id/',
-				component: {template: "<device/>"}
+				component: c.Device,
+				children: [
+					{
+						path: '',
+						redirect: 'power/' 
+					}, {
+						path: 'power/' ,
+						component: c.DevicePower
+					}, {
+						path: 'timer/' ,
+						component: c.DeviceTimer
+					}, {
+						path: 'option/' ,
+						component: c.DeviceOption
+					}
+				]
 			}, {
-				path: '/device/:id/timer/:tmr_id',
-				component: {template: "<timer-page/>"}
+				path: '/device/:id/timer/:tmr_id/',
+				component: c.TimerPage
 			}, {
 				path: '*',
-				component: c.error
+				component: c.Error
 			}
 		];
 		

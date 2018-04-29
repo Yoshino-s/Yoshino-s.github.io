@@ -6,24 +6,7 @@
 			top:0;
 			width: 100%;
 		}
-		#global-appbar {
-			z-index: 1;
-			width: 100%;
-		}
-		.appbar-fixed {
-			position: fixed;
-			top:0;
-		}
-		.appbar-adjust {
-			height: 56px;
-			padding: 0 8px;
-			width: 100%;
-		}
-		@media (min-width: 480px) {
-			.appbar-adjust {
-				height: 64px;
-			}
-		}
+		
 		.fade-enter-active, .fade-leave-active {
 			transition: opacity .3s ease;
 		}
@@ -52,6 +35,21 @@
 			padding: .25em;
 			position: relative;
 		}
+.child-view {
+  position: absolute;
+  transition: all .5s cubic-bezier(.55,0,.1,1);
+  width: 100%;
+}
+.slide-left-enter, .slide-right-leave-active {
+  opacity: 0;
+  -webkit-transform: translate(100vw, 0);
+  transform: translate(100vw, 0);
+}
+.slide-left-leave-active, .slide-right-enter {
+  opacity: 0;
+  -webkit-transform: translate(-100vw, 0);
+  transform: translate(-100vw, 0);
+}
 	</style>
 </global>
 <error>
@@ -74,11 +72,19 @@
 <header-drawer>
 	<template>
 		<mu-linear-progress :size="3" id="global-progressbar" color="blue"/>
-		<mu-appbar :title="$route.params.id" id="global-appbar" v-if="appbarShow" :class="appbarFixed?'appbar-fixed':''">
+		
+		<mu-appbar :title="$route.params.id" id="global-appbar" v-if="appbarMode" :class="{'appbar-fixed': fixed}">
 			<mu-icon-button :icon="backMode?'arrow_back':'menu'" slot="left" @click="leftFunc()"/>
 			<mu-icon-button icon="expand_more" slot="right" ref="more" @click="toggleMore()"/>
 		</mu-appbar>
-		<div class="appbar-adjust" v-if="appbarShow && appbarFixed"></div>
+		
+		<mu-tabs v-if="tabsMode" :value="activeTab" :class="{'tabs-fixed': fixed}" @change="handleTabChange">
+			<mu-tab v-bind="tab" v-for="(tab, index) in tabs" :key="index"/>
+		</mu-tabs>
+		
+		<div v-if="fixed && appbarMode" class="appbar-adjust"> </div>
+		<div v-if="fixed && tabsMode" class="tabs-adjust"> </div>
+		
 		<mu-drawer :open="open" :docked="false" @close="open=false">
 			<mu-list class="drawer-list" @item-click="open=false">
 				<mu-list-item title="Main Page" to="/devices/">
@@ -108,9 +114,16 @@
 		{
 			data() {
 				return {
-					appbarShow: true,
-					appbarFixed: true,
+					appbarMode: true,
+					
 					backMode: false,
+					
+					tabsMode: false,
+					tabs: [],
+					activeTab: 'power',
+					
+					fixed: true,
+					
 					open: false,
 					moreOpen: false,
 					trigger: null,
@@ -130,39 +143,56 @@
 				},
 				handleClose() {
 					this.moreOpen = false;
+				},
+				handleTabChange(val) {
+					this.activeTab = val;
 				}
 			},
 			mounted() {
 				this.trigger = this.$refs.more.$el;
 			},
 			created() {
-				let _this = this;
-				this.$global.AppBar = {
-					get show() {
-						return _this.appbarShow
-					},
-					set show(v) {
-						_this.appbarShow = v;
-					},
-					get fixed() {
-						return _this.appbarFixed
-					},
-					set fixed(v) {
-						_this.appbarFixed = v;
-					},
-					get backMode() {
-						return _this.backMode
-					},
-					set backMode(v) {
-						_this.backMode = v;
-					},
-				}
+				this.$global.Header = this;
 			}
 		}
 	</script>
 	<style>
 		.drawer-list .router-link-active {
 			font-weight: 500;
+		}
+		
+		#global-appbar {
+			z-index: 1;
+			width: 100%;
+		}
+		.appbar-fixed {
+			position: fixed;
+			top:0;
+		}
+		.appbar-adjust {
+			height: 56px;
+			padding: 0 8px;
+			width: 100%;
+		}
+		
+		@media (min-width: 480px) {
+			.appbar-adjust {
+				height: 64px;
+			}
+		}
+		
+		.fixed-tabs {
+			position: fixed;
+			top:56px;
+			width: 100%;
+		}
+		@media (min-width: 480px) {
+			.fixed-tabs {
+				top:64px;
+			}
+		}
+		.tabs-adjust {
+			height: 48px;
 		}
 	</style>
 </header-drawer>
@@ -423,12 +453,7 @@
 </add-device>
 <device>
 	<template>
-		<mu-tabs :value="activeTab" class="fixed-tabs" @change="handleTabChange">
-			<mu-tab value="power" title="Power" to="../power/"/>
-			<mu-tab value="timer" title="Timer" to="../timer/"/>
-			<mu-tab value="option" title="Option" to="../option/"/>
-		</mu-tabs>
-		<div class="tabs-adjust"></div>
+		
 		<div class="tab-content">
 			<transition name="fade-in-out" enter-active-class="animated fadeInRight" leave-active-class="abs animated fadeOutLeft" mode="">
 				<router-view></router-view>
@@ -450,19 +475,7 @@
 		}
 	</script>
 	<style>
-		.fixed-tabs {
-			position: fixed;
-			top:56px;
-			width: 100%;
-		}
-		@media (min-width: 480px) {
-			.fixed-tabs {
-				top:64px;
-			}
-		}
-		.tabs-adjust {
-			height: 48px;
-		}
+		
 		.tab-content {
 			position: relative;
 			-moz-animation-duration: .5s;

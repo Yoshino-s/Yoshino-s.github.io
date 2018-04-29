@@ -82,7 +82,16 @@ requirejs(["polyfill", "vue", "vue-router", "vconsole", "muse", "component" ,"ut
 		const app = new Vue({
 			router,
 			data: {
-				headerMenu: []
+				headerMenu: [],
+				transitionName: 'slide-left'
+			},
+			watch: {
+				'$route' (to, from) {
+					const toDepth = to.path.split('/').length
+					const fromDepth = from.path.split('/').length
+					this.transitionName = toDepth < fromDepth ? 'slide-right' : 'slide-left'
+					console.log(this.transitionName)
+				}
 			}
 		}).$mount('#app');
 		console.timeStamp("vue configed");

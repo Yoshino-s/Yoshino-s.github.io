@@ -1,11 +1,15 @@
-define(["vue", "utils", "axios", "dragable", "echarts"], function(Vue, utils, axios, dragable, echarts) {
+define(["vue", "utils", "axios", "dragable", "echarts", "term"], function(Vue, utils, axios, dragable, echarts, Terminal) {
 	const STYLE_ELEMENT_ID = "component-styles";
-	let styleElement = null
+	let styleElement = null;
+	
 	const fastEval = e => {
+		let _expose = {};
+		const expose = o => {_expose=o}
 		try {
-			return eval(e)
+			eval(e);
+			return _expose;
 		}catch(e){
-			console.log(e)
+			console.log(e.message)
 		}
 	}
 	

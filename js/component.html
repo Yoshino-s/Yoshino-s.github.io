@@ -8,7 +8,7 @@
 		}
 		
 		.fade-enter-active, .fade-leave-active {
-			transition: opacity .3s ease;
+			transition: opacigy .5s cubic-bezier(.55,0,.1,1);
 		}
 		.fade-enter, .fade-leave-to {
 			opacity: 0;
@@ -111,12 +111,13 @@
 		</mu-popover>
 	</template>
 	<script>
-		{
+		expose({
 			data() {
 				return {
 					appbarMode: true,
 					
 					backMode: false,
+					backTo: '-1',
 					
 					tabsMode: false,
 					tabs: [],
@@ -146,6 +147,36 @@
 				},
 				handleTabChange(val) {
 					this.activeTab = val;
+				},
+				logStatus() {
+					return {
+						appbarMode: this.appbarMode,
+					
+						backMode: this.backMode,
+						backTo: this.backTo,
+					
+						tabsMode: this.tabsMode,
+						tabs: this.tabs,
+						activeTab: this.activeTab,
+					
+						fixed: this.fixed,
+					
+						menuItem: this.menuItem
+					}
+				},
+				loadStatus(st) {
+					this.appbarMode = st.appbarMode;
+					
+					this.backMode = st.backMode;
+					this.backTo = st.backTo;
+					
+					this.tabsMode = st.tabsMode;
+					this.tabs = st.tabs;
+					this.activeTab = st.activeTab;
+					
+					this.fixed = st.fixed;
+					
+					this.menuItem = st.menuItem;
 				}
 			},
 			mounted() {
@@ -154,7 +185,7 @@
 			created() {
 				this.$global.Header = this;
 			}
-		}
+		})
 	</script>
 	<style>
 		.drawer-list .router-link-active {
@@ -181,13 +212,13 @@
 			}
 		}
 		
-		.fixed-tabs {
+		.tabs-fixed {
 			position: fixed;
 			top:56px;
 			width: 100%;
 		}
 		@media (min-width: 480px) {
-			.fixed-tabs {
+			.tabs-fixed {
 				top:64px;
 			}
 		}
@@ -270,7 +301,7 @@
 		</mu-dialog>
 	</template>
 	<script>
-		{
+		expose({
 			data () {
 				return {
 					restartO: false,
@@ -306,7 +337,7 @@
 					this.resetOd = false;
 				}
 			}
-		}
+		})
 	</script>
 	<style>
 		.warning-text {
@@ -385,7 +416,7 @@
 		<mu-float-button icon="add" class="fab-fixed" to="/adddevice/"/>
 	</template>
 	<script>
-		{
+		expose({
 			data() {
 				return {
 					tiles: [
@@ -403,7 +434,7 @@
 					this.imageType = !this.imageType;
 				}
 			}
-		}
+		})
 	</script>
 	<style>
 		.grid-list {
@@ -453,15 +484,12 @@
 </add-device>
 <device>
 	<template>
-		
 		<div class="tab-content">
-			<transition name="fade-in-out" enter-active-class="animated fadeInRight" leave-active-class="abs animated fadeOutLeft" mode="">
-				<router-view></router-view>
-			</transition>
+			<router-view></router-view>
 		</div>
 	</template>
 	<script>
-		{
+		expose({
 			data() {
 				return {
 					activeTab: "power"
@@ -471,8 +499,22 @@
 				handleTabChange(val) {
 					this.activeTab = val;
 				}
+			},
+			created() {
+				this.st_log = this.$global.Header.logStatus();
+				this.$global.Header.backMode = true;
+				this.$global.Header.tabsMode = true;
+				this.$global.Header.tabs = [
+					{value: 'power', title: 'power', to: '../power/', replace: true},
+					{value: 'timer', title: 'timer', to: '../timer/', replace: true},
+					{value: 'option', title: 'option', to: '../option/', replace: true}
+				];
+				this.$global.Header.activeTab = this.$route.path.split('/').reverse()[1];
+			},
+			beforeDestroy(){
+				this.$global.Header.loadStatus(this.st_log);
 			}
-		}
+		})
 	</script>
 	<style>
 		
@@ -519,7 +561,7 @@
 		</div>
 	</template>
 	<script>
-		{
+		expose({
 			data() {
 				let ret = {
 					gridList: [],
@@ -585,7 +627,7 @@
 					}
 				}
 			}
-		}
+		})
 	</script>
 	<style>
 		
@@ -637,15 +679,14 @@
 					<mu-icon slot="left" value="power_settings_new" :color="(timer.mode=='open')?'green':'red'"/>
 					<mu-switch v-model="timer.status" slot="right"/>
 				</mu-list-item>
-				
 			</mu-list>
 		</div>
 	</template>
 	<script>
-		{
+		expose({
 			data() {
 				let ret = {timers:[]}
-				for(let i = 0; i < 24;i++) {
+				for(let i = 0; i < 5;i++) {
 					ret.timers.push({
 						id: i,
 						time: (i<10?'0':'')+i+':00',
@@ -655,44 +696,142 @@
 				}
 				return ret;
 			}
-		}
+		})
 	</script>
 	<style>
 	</style>
 </device-timer>
 <device-option>
 	<template>
-		<div v-html="$marked(t)" class="markdown-body mu-content-block">
-			
-		</div>
 	</template>
 	<script>
-		{
+		expose({
 			data() {
-				console.log(666);
-				axios.get("https://raw.githubusercontent.com/markedjs/marked/master/docs/README.md").then(t=>{this.t = t.data;}).catch(e=>console.log(e.status));
+				
 				return {t:""}
 			}
-		}
+		})
 	</script>
 	<style>
 	</style>
 </device-option>
 <timer-page>
 	<template>
-		<div v-html="$marked(t)" class="markdown-body mu-content-block">
-			
+		<div class="mu-paper-2 content-paper">
+			<mu-list class="border-al">
+				<mu-list-item title="Repeat" after-text="Everyday">
+					<mu-icon slot="right" value="chevron_right"/>
+				</mu-list-item>
+				<mu-divider shallow-inset/>
+				<mu-list-item title="Remark" @click="focus($event)" disable-r>
+					<mu-text-field slot="after" hint-text="hintText" :full-width="true"/>
+				</mu-list-item>
+				<mu-divider shallow-inset/>
+				<mu-list-item title="Time" @click="focus($event)">
+					<mu-time-picker slot="after" hint-text="24小时制" format="24hr" :full-width="true" input-class="timer-time-input"/>
+				</mu-list-item>
+			</mu-list>
 		</div>
 	</template>
 	<script>
-		{
+		expose({
 			data() {
 				console.log(666);
 				axios.get("https://raw.githubusercontent.com/markedjs/marked/master/docs/README.md").then(t=>{this.t = t.data;}).catch(e=>console.log(e.status));
 				return {t:""}
+			},
+			methods: {
+				focus(event) {
+					console.log(event.currentTarget);
+					
+				}
 			}
-		}
+		})
 	</script>
 	<style>
+		.border-all * {
+			border: 1px solid #0f0
+		}
 	</style>
 </timer-page>
+<terminal>
+	<template>
+		<input type="text" name="webrepl_url" id="url" v-model="url" />
+		<button id="button" @click="button_click()">{{button_content}}</button>
+		<div id="term"></div>
+		<div id="term_bottom"></div>
+	</template>
+	<script>
+		expose({
+			created() {
+				this.st_log = this.$global.Header.logStatus();
+				this.$global.Header.appbarMode = false;
+			},
+			beforeDestroy(){
+				this.$global.Header.loadStatus(this.st_log);
+			},
+			data() {
+				return {
+					url: "ws://192.168.1.112:8266/",
+					button_content: "connect",
+					term: null,
+					ws: null,
+					connected: false,
+					st_log: null
+				}
+			},
+			methods: {
+				button_click() {
+					if (this.connected) {
+						this.ws.close();
+					} else {
+						document.getElementById('url').disabled = true;
+						this.button_content = "Disconnect";
+						this.connected = true;
+						this.connect(this.url);
+					}
+				},
+				connect(url) {
+					this.ws = new WebSocket(url);
+					this.ws.binaryType = 'arraybuffer';
+					this.ws.onopen = () => {
+						this.term.removeAllListeners('data');
+						this.term.on('data', data => {
+							data = data.replace(/\n/g, "\r");
+							this.ws.send(data);
+						});
+						this.term.focus();
+						this.term.element.focus();
+						this.term.write('\x1b[31mWelcome to MicroPython!\x1b[m\r\n');
+						this.ws.onmessage = event => {
+							this.term.write(event.data);
+							document.getElementsByClassName("terminal-cursor")[0].scrollIntoView(false);
+						};
+					};
+					this.ws.onclose = () => {
+						this.connected = false;
+						if (this.term) {
+							this.term.write('\x1b[31mDisconnected\x1b[m\r\n');
+						}
+						this.term.off('data');
+						this.prepare_for_connect();
+					}
+				},
+				prepare_for_connect() {
+					document.getElementById('url').disabled = false;
+					this.button_content = "Connect";
+				}
+			},
+			mounted() {
+				this.term = new Terminal({
+					cols: Math.floor(window.innerWidth/7),
+					rows: 40,
+					useStyle: true,
+					screenKeys: true,
+					cursorBlink: false
+				});
+				this.term.open(document.getElementById("term"));
+			}
+		})
+	</script>
+</terminal>

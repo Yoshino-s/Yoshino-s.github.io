@@ -26,7 +26,6 @@ define(["vue", "marked", "highlightjs"], function(Vue, marked, highlightjs){
 	
 	Object.defineProperty(Vue.prototype, "$global", {
 		get: function () {
-			console.log(233);
 			return globalInstance
 		},
 		set: function () {

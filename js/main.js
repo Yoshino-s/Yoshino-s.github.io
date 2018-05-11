@@ -78,7 +78,7 @@ requirejs(["polyfill", "vue", "vue-router", "vconsole", "muse", "component-loade
 		];
 		
 		const router = new Router({
-			mode: 'history',
+			mode: 'hash',
 			routes
 		},e => {
 			console.log(e);

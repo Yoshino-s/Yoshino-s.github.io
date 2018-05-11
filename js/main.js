@@ -11,11 +11,14 @@ requirejs.config({
 		echarts: "https://cdn.jsdelivr.net/npm/echarts/dist/echarts.common.min",
 		marked: "https://cdn.jsdelivr.net/npm/marked/marked.min",
 		highlightjs: "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/highlight.min",
-		term: "/js/lib/term"
+		term: "/js/lib/term",
+		'component-loader': "/js/component-loader",
+		loader: '/js/loader'
 	}
 });
 console.timeStamp("requirejs loaded", true);
-requirejs(["polyfill", "vue", "vue-router", "vconsole", "muse", "component" ,"utils", "echarts"], function(pf, Vue, Router, VConsole, Muse, cp, utils, echarts) {
+requirejs(["polyfill", "vue", "vue-router", "vconsole", "muse", "component-loader" ,"utils", "echarts", "loader"], function(pf, Vue, Router, VConsole, Muse, cp, utils, echarts, loader) {
+	window.loader = loader;
 	console.timeStamp("main start", true);
 	let vc = new VConsole();
 	Vue.use(Router);
@@ -27,6 +30,9 @@ requirejs(["polyfill", "vue", "vue-router", "vconsole", "muse", "component" ,"ut
 		
 		const routes = [
 			{
+				path: '/paragraph/',
+				component: c.Paragraph
+			}, {
 				path: '/settings/',
 				component: c.Settings
 			}, {

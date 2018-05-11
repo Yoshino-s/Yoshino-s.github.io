@@ -40,11 +40,28 @@ define(["vue", "marked", "highlightjs"], function(Vue, marked, highlightjs){
 		}
 	});
 	
+	const partlyExpose = (obj, keys) => {
+		let proxy = {};
+		keys.forEach(k=>Object.defineProperty(proxy, k, {
+			get: function () {return obj[k]},
+			set: function (d) {obj[k]=d}
+		}));
+		proxy.backup = () => {
+			let bu = {};
+			keys.forEach(k=>{bu[k]=obj[k];});
+		};
+		proxy.recovery = (bu) => {
+			keys.forEach(k=>{obj[k]=bu[k];});
+		}
+		return proxy;
+	}
+	
 	const toCamelCase = e => e.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
 	const toHyphens = e => e.replace(/[A-Z]/g, function (g) { return '-'+g.toLowerCase(); });
 	
 	return {
 		toHyphens,
-		toCamelCase
+		toCamelCase,
+		partlyExpose
 	}
 })

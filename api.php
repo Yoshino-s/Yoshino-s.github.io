@@ -2,6 +2,7 @@
 	$all_query = array();
 	
 	require './api/blog_api.php';
+	require './api/check_update.php';
 	
 	
 	$query = $_POST['q'] ?? $_GET['q'] ?? 'default';

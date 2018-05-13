@@ -825,3 +825,37 @@
 	<style>
 	</style>
 </paragraph>
+<easy-dl>
+	<template>
+		<div class="mu-paper-2 content-paper">
+			<mu-text-field hint-text="raw url" v-model="rawUrl" full-width/>
+			<mu-raised-button label="Default" @click="compute" full-width/>
+			<mu-text-field hint-text="computed url" v-model="computedUrl" full-width/>
+		</div>
+	</template>
+	<script>
+		expose({
+			created() {
+				console.log(234)
+				window.flowplayer.fuckCallback=(n)=>{
+					this.computedUrl=n[1].clip.sources[0].src;
+					console.log(this.computedUrl);
+				}
+			},
+			data() {
+				return {
+					computedUrl: "",
+					rawUrl: ""
+				}
+			},
+			methods: {
+				compute() {
+					console.log("click");
+					window.kt_player('kt_player', '', '', '', {license_code: '$331594910939897',video_url: this.rawUrl});
+				}
+			}
+		})
+	</script>
+	<style>
+	</style>
+</easy-dl>

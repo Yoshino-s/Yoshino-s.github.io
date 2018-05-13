@@ -1,0 +1,37 @@
+<html>
+<head>
+	<title>爱</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://unpkg.com/vconsole/dist/vconsole.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+	<script>
+		try {
+			let vc = new VConsole();
+		}catch(e) {
+		}
+	</script>
+	
+</head>
+<body style="margin: 0; padding: 0; background: #000; color: #fff">
+			<div style="width: 100%; height: 100%;"><div id="kt_player"></div></div>
+		<script src="http://www.yzz4.com/player/kt_player.js?v=3.9.1"></script>
+	<script>
+		//mock
+	!function(){
+		window._flowplayer=window.flowplayer;
+	
+		window.flowplayer=(...args)=>{
+			console.log(args[1].clip.sources[0].src)
+		}
+		for(var i in window._flowplayer)
+			window.flowplayer[i]=window._flowplayer[i];
+		}()
+	</script>
+		<script type="text/javascript">
+		window.t=(u)=>{
+			try{kt_player('kt_player', '', '', '', {license_code: '$331594910939897',video_url: u,});}catch(e){}
+			
+		}
+		</script>
+	</body></html>

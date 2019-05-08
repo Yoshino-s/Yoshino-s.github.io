@@ -3,8 +3,7 @@ requirejs.config({
 		polyfill: "https://cdn.polyfill.io/v2/polyfill.min",
 		vue: "https://cdn.jsdelivr.net/npm/vue/dist/vue",
 		'vue-router': "https://cdn.jsdelivr.net/npm/vue-router/dist/vue-router.min",
-		vconsole: "https://cdn.jsdelivr.net/npm/vconsole/dist/vconsole.min",
-		muse: "https://cdn.jsdelivr.net/npm/muse-ui/dist/muse-ui",
+		muse: "https://cdn.jsdelivr.net/npm/muse-ui@2.1.0/dist/muse-ui",
 		axios: "https://cdn.jsdelivr.net/npm/axios/dist/axios.min",
 		sortablejs: "https://cdn.jsdelivr.net/npm/sortablejs/Sortable.min",
 		dragable: "https://cdn.jsdelivr.net/npm/vuedraggable/dist/vuedraggable.min",
@@ -17,10 +16,9 @@ requirejs.config({
 	}
 });
 console.timeStamp("requirejs loaded", true);
-requirejs(["polyfill", "vue", "vue-router", "vconsole", "muse", "component-loader" ,"utils", "echarts", "loader"], function(pf, Vue, Router, VConsole, Muse, cp, utils, echarts, loader) {
+requirejs(["polyfill", "vue", "vue-router", "muse", "component-loader" ,"utils", "echarts", "loader"], function(pf, Vue, Router, Muse, cp, utils, echarts, loader) {
 	window.loader = loader;
 	console.timeStamp("main start", true);
-	let vc = new VConsole();
 	Vue.use(Router);
 	Vue.use(Muse);
 	
